@@ -21,6 +21,10 @@ type AuthContextValue = {
   signUp: (name: string, email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  /** Re-sends the verification email to the signed-in user. */
+  resendVerification: () => Promise<void>;
+  /** Re-fetches the user from Firebase (e.g. after they click the verification link). */
+  reloadUser: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -58,6 +62,16 @@ export function AuthProvider({ children }: PropsWithChildren) {
       },
       async resetPassword(email) {
         await sendPasswordResetEmail(auth, email.trim());
+      },
+      async resendVerification() {
+        if (!auth.currentUser) return;
+        await sendEmailVerification(auth.currentUser);
+      },
+      async reloadUser() {
+        if (!auth.currentUser) return;
+        // reload() updates the user in place without firing onAuthStateChanged.
+        await auth.currentUser.reload();
+        setProfileVersion((v) => v + 1);
       },
       async signOut() {
         await signOutFromGoogle();

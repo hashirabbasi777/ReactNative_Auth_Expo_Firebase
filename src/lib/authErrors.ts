@@ -25,6 +25,11 @@ export function getAuthErrorMessage(error: unknown): string {
         return 'This email is already linked to another sign-in method.';
       case 'auth/operation-not-allowed':
         return 'This sign-in method is not enabled in Firebase.';
+      case 'auth/user-disabled':
+        return 'This account has been disabled.';
+      case 'auth/user-token-expired':
+      case 'auth/requires-recent-login':
+        return 'Your session has expired. Please sign in again.';
       default:
         return 'Something went wrong. Please try again.';
     }

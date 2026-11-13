@@ -51,6 +51,11 @@ export async function signInWithGoogle(): Promise<UserCredential | null> {
           return null;
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
           throw new Error('Google Play Services is not available or outdated.');
+        case '10': // Android DEVELOPER_ERROR: SHA-1 / package / web client ID mismatch
+        case 'DEVELOPER_ERROR':
+          throw new Error(
+            'Google Sign-In is misconfigured (DEVELOPER_ERROR). Check the SHA-1 and package name in Firebase and the web client ID in .env.'
+          );
       }
     }
     throw error;
